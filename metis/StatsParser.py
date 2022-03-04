@@ -87,7 +87,7 @@ class StatsParser(object):
                                 event_rates.append(rate)
                         elif is_cmssw and len(condor_jobs) > 0:
                             errlog = condor_jobs[-1]["logfile_err"]
-                            parsed = LogParser.log_parser(errlog,do_header=False,do_error=False,do_rate=True)
+                            parsed = LogParser.log_parser(errlog,do_header=False,do_error=False,do_rate=False)
                             rate = parsed.get("event_rate",-1)
                             if rate > 0.:
                                 event_rates.append(rate)

@@ -287,7 +287,7 @@ chirp ChirpMetisStatus "before_copy"
 
 COPY_SRC="file://`pwd`/${OUTPUTNAME}.root"
 OUTPUTDIRSTORE=$(echo $OUTPUTDIR | sed "s#^/hadoop/cms/store#/store#")
-COPY_DEST="davs://redirector.t2.ucsd.edu:1094${OUTPUTDIRSTORE}/${OUTPUTNAME}_${IFILE}.root"
+COPY_DEST="davs://redirector.t2.ucsd.edu:1095${OUTPUTDIRSTORE}/${OUTPUTNAME}_${IFILE}.root"
 stageout $COPY_SRC $COPY_DEST
 
 for OTHEROUTPUT in $(echo "$OTHEROUTPUTS" | sed -n 1'p' | tr ',' '\n'); do

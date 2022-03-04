@@ -376,6 +376,7 @@ def condor_submit(**kwargs): # pragma: no cover
                 params["extra"] += '+{0}="{1}"\n'.format(*sel_pair)
 
     params["proxyline"] = "x509userproxy={proxy}".format(proxy=params["proxy"])
+    params["useproxy"] = "use_x509userproxy = True"
 
     # Require singularity+cvmfs unless machine is uaf-*. or uafino.
     # NOTE, double {{ and }} because this gets str.format'ted later on
@@ -407,6 +408,7 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 """
     template += "{0}\n".format(params["proxyline"])
+    template += "{0}\n".format(params["useproxy"])
     template += "{0}\n".format(requirements_line)
     if kwargs.get("container",None):
         template += '+SingularityImage="{0}"\n'.format(kwargs.get("container",None))

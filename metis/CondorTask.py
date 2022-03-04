@@ -24,14 +24,15 @@ class CondorTask(Task):
         :kwarg tag: unique tag to specify task (along with dataset name)
         :kwarg split_within_files: `True` for LHE processing
         :kwarg total_nevents: needed for LHE processing
-        :kwarg special_dir: customize where to put files in hadoop (see `output_dir`)
+        :kwarg special_dir: customize where to put files in ceph (see `output_dir`)
         :kwarg max_jobs: only consider as many inputs as needed to provide `max_jobs` outputs
         :kwarg min_completion_fraction: force completion of job if this fraction of outputs is reached
         :kwarg additional_input_files: list of extra files to ship to the worker node
-        :kwarg snt_dir: use /hadoop/cms/store/group/snt/ as the base output directory
+        :kwarg snt_dir: use /ceph/cms/store/group/snt/ as the base output directory
         :kwarg outdir_name: use custom directory in user's hadoop
         :kwarg output_dir: override output directory
         :kwarg recopy_inputs: force re-copy/prepare inputs (executable, tarfile, ...) every class instantiation
+        :kwarg use_haddop: force to use /hadoop instead of /ceph to store outputs (deprecated, ceph is newer and more stable)
         """
         self.sample = kwargs.get("sample", None)
         self.min_completion_fraction = kwargs.get("min_completion_fraction", 1.0)
@@ -57,11 +58,14 @@ class CondorTask(Task):
         self.max_jobs = kwargs.get("max_jobs",0)
         self.snt_dir = kwargs.get("snt_dir",False)
         self.recopy_inputs = kwargs.get("recopy_inputs",False)
+        self.use_hadoop = kwargs.get("use_hadoop",False)
 
         # If we have this attribute, then we must have gotten it from
         # a subclass (so use that executable instead of just bland condor exe)
         if not hasattr(self, "input_executable"):
-            self.input_executable = kwargs.get("executable", self.get_metis_base() + "metis/executables/condor_skim_exe.sh")
+            self.input_executable = kwargs.get("executable", self.get_metis_base() + "metis/executables/condor_exe.sh")
+            if self.use_hadoop:
+                self.input_executable = kwargs.get("executable", self.get_metis_base() + "metis/executables/condor_exe_hadoop.sh")
 
         self.read_only = kwargs.get("read_only", False)
         special_dir = kwargs.get("special_dir", "ProjectMetis")
@@ -69,12 +73,16 @@ class CondorTask(Task):
         # If we didn't get an output directory, use the canonical format. E.g.,
         #   /hadoop/cms/store/user/namin/ProjectMetis/MET_Run2017A-PromptReco-v2_MINIAOD_CMS4_V00-00-03
         if self.snt_dir:
-            self.output_dir = "/hadoop/cms/store/group/snt/{0}/{1}_{2}/".format(special_dir, self.sample.get_datasetname().replace("/", "_").lstrip("_"), self.tag)
+            self.output_dir = "/ceph/cms/store/group/snt/{0}/{1}_{2}/".format(special_dir, self.sample.get_datasetname().replace("/", "_").lstrip("_"), self.tag)
+            if self.use_hadoop:
+                self.output_dir = "/hadoop/cms/store/group/snt/{0}/{1}_{2}/".format(special_dir, self.sample.get_datasetname().replace("/", "_").lstrip("_"), self.tag)
         else:
             hadoop_user = os.environ.get("GRIDUSER","").strip()  # NOTE, might be different for some weird folks
             if not hadoop_user: hadoop_user = os.environ.get("USER") # fallback
             self.outdir_name = kwargs.get("outdir_name", self.sample.get_datasetname().replace("/", "_").lstrip("_"))
-            self.output_dir = kwargs.get("output_dir", "/hadoop/cms/store/user/{0}/{1}/{2}_{3}/".format(hadoop_user, special_dir, self.outdir_name, self.tag))
+            self.output_dir = kwargs.get("output_dir", "/ceph/cms/store/user/{0}/{1}/{2}_{3}/".format(hadoop_user, special_dir, self.outdir_name, self.tag))
+            if self.use_hadoop:
+                self.output_dir = kwargs.get("output_dir", "/hadoop/cms/store/user/{0}/{1}/{2}_{3}/".format(hadoop_user, special_dir, self.outdir_name, self.tag))
 
 
         # I/O mapping (many-to-one as described above)
