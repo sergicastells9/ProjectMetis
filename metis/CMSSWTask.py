@@ -247,9 +247,9 @@ def set_output_name(outputname):
         # and the first event to start with (firstEvent)
         if self.split_within_files:
             if self.kwargs.get("condor_submit_params", {}).get("sites") == "T2_US_UCSD":
-                fnames = ['"{0}"'.format(fo.get_name().replace("/hadoop/cms","file:/hadoop/cms")) for fo in self.get_inputs(flatten=True)]
+                fnames = ['"{0}"'.format(fo.get_name().replace("/ceph/cms","file:/ceph/cms")) for fo in self.get_inputs(flatten=True)]
             else:
-                fnames = ['"{0}"'.format(fo.get_name().replace("/hadoop/cms","").replace("/store/","root://cmsxrootd.fnal.gov//store/")) for fo in self.get_inputs(flatten=True)]
+                fnames = ['"{0}"'.format(fo.get_name().replace("/ceph/cms","").replace("/store/","root://cmsxrootd.fnal.gov//store/")) for fo in self.get_inputs(flatten=True)]
             fnames = sorted(list(set(fnames)))
             with open(pset_location_out, "a") as fhin:
                 # hard limit at 255 input files since that's the max CMSSW allows in process.source

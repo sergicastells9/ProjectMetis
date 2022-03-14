@@ -294,7 +294,7 @@ for OTHEROUTPUT in $(echo "$OTHEROUTPUTS" | sed -n 1'p' | tr ',' '\n'); do
     [ -e ${OTHEROUTPUT} ] && {
         NOROOT=$(echo $OTHEROUTPUT | sed 's/\.root//')
         COPY_SRC="file://`pwd`/${NOROOT}.root"
-        COPY_DEST="gsiftp://gftp.t2.ucsd.edu${OUTPUTDIR}/${NOROOT}_${IFILE}.root"
+				COPY_DEST="davs://redirector.t2.ucsd.edu:1095${OUTPUTDIRSTORE}/${OUTPUTNAME}_${IFILE}.root"
         stageout $COPY_SRC $COPY_DEST
     }
 done
