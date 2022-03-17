@@ -82,7 +82,7 @@ fi
 
 # update input file
 echo "process.source = cms.Source(\"PoolSource\",
-fileNames=cms.untracked.vstring(\"${INPUTFILENAMES}\".replace('/hadoop', 'file:/hadoop').split(\",\"))
+fileNames=cms.untracked.vstring(\"${INPUTFILENAMES}\".replace('/ceph', 'file:/ceph').split(\",\"))
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( -1 ) )
@@ -100,7 +100,7 @@ fi
 echo "[wrapper] output root files are currently: "
 ls -lh *.root
 
-substr="/hadoop/cms"
+substr="/ceph/cms"
 new_OUTPUTDIR=${OUTPUTDIR#$substr}
 # Copy output
 env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-copy -p -f -t 4200 --verbose file://`pwd`/nanoaod.root davs://redirector.t2.ucsd.edu:1095/${new_OUTPUTDIR}/${OUTPUTFILENAME}_${INDEX}.root --checksum ADLER32

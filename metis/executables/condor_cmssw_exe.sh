@@ -49,7 +49,7 @@ function edit_pset {
     if [[ "$INPUTFILENAMES" != "dummy"* ]]; then
         echo "process.source.fileNames = cms.untracked.vstring([" >> pset.py
         for INPUTFILENAME in $(echo "$INPUTFILENAMES" | sed -n 1'p' | tr ',' '\n'); do
-            INPUTFILENAME=$(echo $INPUTFILENAME | sed 's|^/hadoop/cms||')
+            INPUTFILENAME=$(echo $INPUTFILENAME | sed 's|^/ceph/cms||')
             # INPUTFILENAME="root://xrootd.unl.edu/${INPUTFILENAME}"
             echo "\"${INPUTFILENAME}\"," >> pset.py
         done
@@ -91,7 +91,7 @@ function stageout {
         REMOVE_STATUS=$?
         if [ $REMOVE_STATUS -ne 0 ]; then
             echo "Uhh, gfal-copy crashed and then the gfal-rm also crashed with code $REMOVE_STATUS"
-            echo "You probably have a corrupt file sitting on hadoop now."
+            echo "You probably have a corrupt file sitting on ceph now."
             exit 1
         fi
     fi
@@ -286,7 +286,9 @@ chirp ChirpMetisStatus "before_copy"
 # stageout $COPY_SRC $COPY_DEST
 
 COPY_SRC="file://`pwd`/${OUTPUTNAME}.root"
-OUTPUTDIRSTORE=$(echo $OUTPUTDIR | sed "s#^/hadoop/cms/store#/store#")
+substr="/ceph/cms"
+OUTPUTDIRSTORE=${OUTPUTDIR#$substr}
+#OUTPUTDIRSTORE=$(echo $OUTPUTDIR | sed -i "s/\/ceph\/cms//g")
 COPY_DEST="davs://redirector.t2.ucsd.edu:1095${OUTPUTDIRSTORE}/${OUTPUTNAME}_${IFILE}.root"
 stageout $COPY_SRC $COPY_DEST
 
