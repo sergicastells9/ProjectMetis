@@ -100,7 +100,7 @@ fi
 echo "[wrapper] output root files are currently: "
 ls -lh *.root
 
-substr="/hadoop/cms"
+substr="/hadoop/"
 new_OUTPUTDIR=${OUTPUTDIR#$substr}
 # Copy output
-env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-copy -p -f -t 4200 --verbose file://`pwd`/nanoaod.root davs://redirector.t2.ucsd.edu:1094/${new_OUTPUTDIR}/${OUTPUTFILENAME}_${INDEX}.root --checksum ADLER32
+env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-copy -p -f -t 4200 --verbose file://`pwd`/nanoaod.root davs://redirector.t3.notredame.edu:1094/${new_OUTPUTDIR}/${OUTPUTFILENAME}_${INDEX}.root --checksum ADLER32

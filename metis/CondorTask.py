@@ -82,7 +82,7 @@ class CondorTask(Task):
             self.outdir_name = kwargs.get("outdir_name", self.sample.get_datasetname().replace("/", "_").lstrip("_"))
             self.output_dir = kwargs.get("output_dir", "/ceph/cms/store/user/{0}/{1}/{2}_{3}/".format(hadoop_user, special_dir, self.outdir_name, self.tag))
             if self.use_hadoop:
-                self.output_dir = kwargs.get("output_dir", "/hadoop/cms/store/user/{0}/{1}/{2}_{3}/".format(hadoop_user, special_dir, self.outdir_name, self.tag))
+                self.output_dir = kwargs.get("output_dir", "/hadoop/users/{0}/{1}/{2}_{3}/".format(hadoop_user, special_dir, self.outdir_name, self.tag))
 
 
         # I/O mapping (many-to-one as described above)
